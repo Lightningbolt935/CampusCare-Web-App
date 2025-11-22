@@ -75,7 +75,7 @@ Frontend: Java (JSWING and APPLETS)
 
 Backend: Python
 
-Database: MySQL
+Database: SQLITE3(Python)
 
 Version Control: Git & GitHub
 
