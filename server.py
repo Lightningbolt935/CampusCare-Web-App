@@ -10,10 +10,6 @@ CORS(app)
 
 DATABASE = 'srm_complaints.db'
 
-# ============================================
-# DATABASE INITIALIZATION
-# ============================================
-
 def init_db():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -60,7 +56,7 @@ def init_db():
         )
     ''')
     
-    # Insert sample users if table is empty
+    # sample users 
     cursor.execute('SELECT COUNT(*) FROM users')
     if cursor.fetchone()[0] == 0:
         sample_users = [
@@ -75,7 +71,7 @@ def init_db():
         ]
         cursor.executemany('INSERT INTO users (username, password, role, name) VALUES (?, ?, ?, ?)', sample_users)
     
-    # Insert sample workers if table is empty
+    # sample workers 
     cursor.execute('SELECT COUNT(*) FROM workers')
     if cursor.fetchone()[0] == 0:
         sample_workers = [
@@ -95,11 +91,8 @@ def get_db():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
-
-# ============================================
+    
 # AUTHENTICATION ROUTES
-# ============================================
-
 @app.route('/explore', methods=['POST'])
 def login():
     data = request.json
@@ -129,10 +122,7 @@ def login():
     else:
         return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
 
-# ============================================
 # FACULTY ROUTES
-# ============================================
-
 @app.route('/faculty', methods=['POST'])
 def submit_complaint():
     data = request.json
@@ -217,10 +207,7 @@ def get_faculty_history(faculty_id):
     
     return jsonify({'complaints': complaints_list})
 
-# ============================================
 # INCHARGE ROUTES
-# ============================================
-
 @app.route('/complaints', methods=['GET'])
 def get_complaints():
     incharge = request.args.get('incharge')
@@ -353,10 +340,8 @@ def get_workers():
     
     return jsonify(workers_list)
 
-# ============================================
-# WORKER ROUTES (NEW)
-# ============================================
 
+# WORKER ROUTES (NEW)
 @app.route('/worker/complaints', methods=['GET'])
 def get_worker_complaints():
     worker_name = request.args.get('worker')
@@ -499,10 +484,7 @@ def get_worker_stats(worker_name):
     
     return jsonify(result)
 
-# ============================================
 # UTILITY ROUTES
-# ============================================
-
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({
@@ -511,10 +493,7 @@ def index():
         'version': '1.0'
     })
 
-# ============================================
 # MAIN
-# ============================================
-
 if __name__ == '__main__':
     if not os.path.exists(DATABASE):
         print("Initializing database...")
@@ -542,4 +521,5 @@ if __name__ == '__main__':
     print("\nServer starting on http://0.0.0.0:5000")
     print("Press CTRL+C to stop the server\n")
     
+
     app.run(host='0.0.0.0', port=5000, debug=True)
